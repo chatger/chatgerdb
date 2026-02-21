@@ -1,8 +1,6 @@
-use std::collections::HashMap;
+// use std::collections::HashMap;
 use std::fs::{File, OpenOptions, create_dir_all};
 use std::io::{Seek, SeekFrom, Write};
-
-use postcard::*;
 
 pub fn create() -> std::io::Result<()> {
     let folder = "files";
@@ -12,12 +10,12 @@ pub fn create() -> std::io::Result<()> {
     let index_path = format!("{}/index", folder);
 
     // создаем пример map
-    let mut map = HashMap::new();
-    map.insert("ключ1", "значение1");
-    map.insert("ключ2", "значение2");
+    // let mut map = HashMap::new();
+    // map.insert("ключ1", "значение1");
+    // map.insert("ключ2", "значение2");
 
-    // сериализация с postcard
-    let data: Vec<u8> = to_allocvec(&map).unwrap();
+    // сериализация
+    let mut data = b"data";
     let len = data.len();
 
     create_dir_all(folder)?;
@@ -41,11 +39,11 @@ pub fn create() -> std::io::Result<()> {
         .open(&wal_path)?;
     wal.write_all(&main_offset_u64.to_le_bytes())?;
     wal.write_all(&len_u64.to_le_bytes())?;
-    wal.write_all(&data)?;
+    wal.write_all(data)?;
     wal.sync_all()?; // flush WAL
 
     // --- записываем основной файл:  data + len ---
-    file.write_all(&data)?;
+    file.write_all(data)?;
     file.write_all(&len_u64.to_le_bytes())?;
     file.sync_all()?;
 

@@ -1,6 +1,3 @@
-use postcard::{from_bytes, to_allocvec};
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Read, Result, Seek, SeekFrom};
 
@@ -28,8 +25,7 @@ pub fn read() -> Result<()> {
     db.read_exact(&mut buffer)?;
 
     // десериализация
-    let deserialized: HashMap<String, String> =
-        from_bytes(&buffer).map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+    let deserialized = "bytes";
 
     println!("{:?}", deserialized);
 
